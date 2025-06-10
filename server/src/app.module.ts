@@ -7,9 +7,13 @@ import { AlertService } from './alert/alert.service';
 import { DBService } from './db/db.service';
 import { AgentService } from './agent/agent.service';
 import { XmtpService } from './social/platforms/xmtp/xmtp.service';
+import { ModulesService } from './modules/modules.service';
+import { UserService } from './user/user.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './tasks/tasks.service';
 
 @Module({
-  imports: [],
+  imports: [ScheduleModule.forRoot()],
   controllers: [AppController],
   providers: [
     DBService,
@@ -19,6 +23,9 @@ import { XmtpService } from './social/platforms/xmtp/xmtp.service';
     AlertService,
     AgentService,
     XmtpService,
+    ModulesService,
+    UserService,
+    TasksService,
   ],
 })
 export class AppModule {}

@@ -34,6 +34,6 @@ export class UserService {
         },
       },
     });
-    return user;
+    return { user, wallet };
   }
 }

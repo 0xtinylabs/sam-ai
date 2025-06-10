@@ -1,11 +1,11 @@
-import { createSigner, logAgentDetails } from './helper';
 import { XmtpMessage } from '../../../types/xmtp.d';
-import config from './config';
 import * as Xmtp from '@xmtp/node-sdk';
 
 import messages from 'src/ai/messages';
 import { Injectable } from '@nestjs/common';
 import { AiService } from 'src/ai/ai.service';
+import { UserService } from 'src/user/user.service';
+import xmtpInitService from './xmtp.init.service';
 
 type Client = Xmtp.Client;
 type Dm = Xmtp.Dm;
@@ -32,30 +32,18 @@ export class XmtpService {
     this.messageHandler = handler;
   }
 
-  constructor(public aiService: AiService) {
+  constructor(
+    public aiService: AiService,
+    public userService: UserService,
+  ) {
     try {
-      this.initializeClient();
+      xmtpInitService.initializeClient().then(async (xmtp) => {
+        this.xmtp = xmtp;
+        await this.startListening(this.xmtp);
+      });
     } catch (err) {
       console.log(err);
     }
-  }
-
-  async initializeClient(): Promise<void> {
-    if (this.xmtp) {
-      return;
-    }
-
-    const signer = createSigner(config.privateKey);
-
-    this.xmtp = await Xmtp.Client.create(signer, {
-      env: config.env,
-    });
-
-    logAgentDetails(this.xmtp);
-
-    await this.xmtp.conversations.sync();
-
-    this.startListening(this.xmtp);
   }
 
   async startListening(xmtp: Client) {
@@ -70,11 +58,6 @@ export class XmtpService {
       )
         continue;
 
-      const inboxState = await xmtp.preferences.inboxStateFromInboxIds([
-        xmtpMessage.senderInboxId,
-      ]);
-      const addressFromInboxId = inboxState[0].identifiers[0].identifier;
-
       const conversation = await this.getConversation(
         xmtpMessage.conversationId,
       );
@@ -82,18 +65,28 @@ export class XmtpService {
         throw new Error('Conversation not found');
       }
 
-      await this.onMessage(conversation, xmtpMessage, addressFromInboxId);
+      await this.onMessage(conversation, xmtpMessage);
     }
   }
 
-  async onMessage(
-    conversation: Dm | Group | null,
-    message: XmtpMessage,
-    address: string,
-  ) {
+  async onMessage(conversation: Dm | Group | null, message: XmtpMessage) {
+    if (!conversation) {
+      return;
+    }
     try {
+      const is_user_exist = await this.userService.existUser(conversation?.id);
+      if (!is_user_exist) {
+        const data = await this.userService.createXMTPUser(conversation.id);
+        return this.sendMessage(
+          conversation,
+          messages.new_user(data.wallet.address),
+        );
+      }
       await this.sendLoading(conversation);
-      const response = await this.aiService.processPrompt(message.content);
+      const response = await this.aiService.processPrompt(
+        message.content,
+        conversation.id,
+      );
       await this.sendMessage(conversation, response);
     } catch {
       await this.sendError(conversation);
@@ -102,9 +95,10 @@ export class XmtpService {
 
   async getClient(): Promise<Client> {
     if (!this.xmtp) {
-      await this.initializeClient();
+      this.xmtp = await xmtpInitService.initializeClient();
+      return this.xmtp;
     }
-    return this.xmtp!;
+    return this.xmtp;
   }
 
   async sendLoading(conversation: Dm | Group | null) {

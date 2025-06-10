@@ -8,8 +8,8 @@ export class AgentService {
   public AGENTKIT_API_SECRET = process.env.AGENTKIT_API_SECRET as string;
   public OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-  async createAITools() {
-    const wallet_provider = await this.createWalletProvider();
+  async createAITools(address?: string) {
+    const wallet_provider = await this.createWalletProvider(address);
     const agentKit = await AgentKit.from({
       cdpApiKeyId: this.AGENTKIT_API_KEY,
       cdpApiKeySecret: this.AGENTKIT_API_SECRET,
@@ -19,11 +19,12 @@ export class AgentService {
     return tools;
   }
 
-  async createWalletProvider() {
+  async createWalletProvider(address?: string) {
     const walletProvider = await CdpWalletProvider.configureWithWallet({
       apiKeyId: this.AGENTKIT_API_KEY,
       apiKeySecret: this.AGENTKIT_API_SECRET,
       networkId: 'base-mainnet',
+      address: address,
     });
     return walletProvider;
   }

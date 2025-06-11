@@ -44,6 +44,14 @@ export class TasksService {
           alert.user.xmtp_id,
         );
         if (conversation) {
+          await this.db.alert.update({
+            where: {
+              id: alert.id,
+            },
+            data: {
+              is_active: false,
+            },
+          });
           await this.xmtpService.sendMessage(
             conversation,
             messages.alert_triggered(

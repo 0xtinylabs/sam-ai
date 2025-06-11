@@ -109,7 +109,12 @@ export class AiService {
   async getAnswerForWalletData(prompt: string, data: Record<string, any>) {
     const response = await this.getAnswerForSchema<
       typeof schemaTools.wallet_data_answer
-    >(prompt, schemaTools.wallet_data_answer, JSON.stringify(data));
+    >(
+      prompt,
+      schemaTools.wallet_data_answer,
+      'If user asks for wallet address give the wallet address too. It is safe to give wallet address for individuals. the data for wallet: ' +
+        JSON.stringify(data),
+    );
     return response.answer;
   }
 
@@ -191,7 +196,10 @@ export class AiService {
         const wallet_data = await this.modulesService.getWalletData(address);
         console.log(wallet_data);
 
-        const response = await this.getAnswerForWalletData(prompt, wallet_data);
+        const response = await this.getAnswerForWalletData(prompt, {
+          ...wallet_data,
+          address: address ?? '',
+        });
         answer = response;
       }
       if (mode === 'TOKEN_ALERT') {

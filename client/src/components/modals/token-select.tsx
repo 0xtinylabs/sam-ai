@@ -29,6 +29,7 @@ const TokenSelectModal = (props: {
     const res = await fetch(
       `https://pro-api.coingecko.com/api/v3/onchain/search/pools?query=${query}`,
       {
+        // @ts-expect-error header
         headers: {
           "x-cg-pro-api-key": process.env.NEXT_PUBLIC_COIN_API_KEY,
         },
@@ -57,6 +58,7 @@ const TokenSelectModal = (props: {
         const res = await fetch(
           `https://pro-api.coingecko.com/api/v3/onchain/networks/base/tokens/${token.address}`,
           {
+            // @ts-expect-error header
             headers: {
               "x-cg-pro-api-key": process.env.NEXT_PUBLIC_COIN_API_KEY,
             },

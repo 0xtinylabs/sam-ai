@@ -6,8 +6,9 @@ import { Dm } from "@xmtp/browser-sdk";
 
 const useXmtp = () => {
   const { xmtpClient } = useXmtpClient({ env: "production" });
-  const { getOrCreateConversation, conversations } =
-    useConversations(xmtpClient);
+  const { getOrCreateConversation, conversations } = useConversations(
+    xmtpClient as any
+  );
   const [conversation, setConversation] = useState<Dm<string> | null>(null);
   const message = useMessages(conversation);
 

@@ -1,8 +1,8 @@
-import apiService from ".";
+import axios from "axios";
 
 const api = {
   sendMessage: async (message: string, wallet_address: string) => {
-    const response = await apiService.post("/ai/send", {
+    const response = await axios.post("/ai", {
       message,
       xmtp_id: wallet_address,
     });

@@ -54,14 +54,14 @@ export const schemaTools = {
     answer: z
       .string()
       .describe(
-        'The answer of the prompt or the question for given data in system prompt. Give token name in answer too. Use KMB notation for numbers',
+        'The answer of the prompt or the question for given data in system prompt. Give token name in answer too. Use KMB notation for numbers. That means shorthen big numbers for more human readable type',
       ),
   }),
   wallet_data_answer: z.object({
     answer: z
       .string()
       .describe(
-        'The answer of the prompt or the question for given data in system prompt. Use KMB notation for numbers',
+        'The answer of the prompt or the question for given data in system prompt. Use KMB notation for numbers. That means shorthen big numbers for more human readable type',
       ),
   }),
   token_alert: (data: Record<string, any>) =>

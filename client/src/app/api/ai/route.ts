@@ -1,5 +1,3 @@
-// Eğer App Router (Next.js 13+ ile) kullanıyorsan
-
 export async function POST(req: Request) {
   const body = await req.json();
   const { message, xmtp_id } = body;

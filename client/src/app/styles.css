@@ -1,0 +1,22 @@
+.header {
+  border-radius: 20px;
+  border: 1px solid var(--stroke-soft-200, #262626);
+  background: var(--alpha-black-alpha-24, rgba(23, 23, 23, 0.24));
+  box-shadow: 0px 0px 20px 20px var(--bg-white-0, #171717);
+  backdrop-filter: blur(10px);
+}
+
+.input-section {
+  border-radius: var(--radius-20, 20px);
+  border: 1px solid var(--stroke-soft-200, #262626);
+  background: linear-gradient(
+    180deg,
+    var(--bg-white-0, #171717) 0%,
+    var(--bg-weak-50, #262626) 100%
+  );
+  box-shadow: 0px 0px 20px 20px var(--bg-white-0, #171717);
+}
+
+.input-section:focus-within {
+  border: 1px solid var(--stroke-strong-950, #262626);
+}

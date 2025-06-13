@@ -11,9 +11,10 @@ import { ModulesService } from './modules/modules.service';
 import { UserService } from './user/user.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks/tasks.service';
+import { AiModule } from './ai/ai.module';
 
 @Module({
-  imports: [ScheduleModule.forRoot()],
+  imports: [ScheduleModule.forRoot(), AiModule],
   controllers: [AppController],
   providers: [
     DBService,

@@ -1,0 +1,26 @@
+FROM node:22-alpine
+
+# Çalışma dizinini /app olarak ayarlar
+WORKDIR /app
+
+# package.json ve package-lock.json (veya yarn.lock) dosyalarını kopyalar
+# Bu adım, bağımlılıkların önbelleğe alınmasını sağlar.
+COPY package*.json ./
+
+# Bağımlılıkları yükler
+# Geliştirme bağımlılıkları da yüklenecektir.
+RUN npm install -f
+
+# Tüm uygulama kodunu kopyalar
+COPY . .
+
+# Prisma istemcisini oluşturur
+# Bu adım, uygulamanın Prisma'yı kullanabilmesi için gereklidir.
+RUN npx prisma generate
+
+# Uygulamanın dinleyeceği portu belirtir
+EXPOSE 3000
+
+# Uygulamayı geliştirme modunda başlatır
+# Bu komut, docker-compose.yml'deki 'command' tarafından geçersiz kılınabilir.
+CMD ["npm", "run", "start:dev"]

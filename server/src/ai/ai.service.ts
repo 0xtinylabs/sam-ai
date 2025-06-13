@@ -106,6 +106,17 @@ export class AiService {
     return response.answer;
   }
 
+  async getAnswerForTokenData(prompt: string, data: Record<string, any>) {
+    const response = await this.getAnswerForSchema<
+      typeof schemaTools.token_data_answer
+    >(
+      prompt,
+      schemaTools.token_data_answer,
+      'the data for token: ' + JSON.stringify(data),
+    );
+    return response.answer;
+  }
+
   async getAnswerForWalletData(prompt: string, data: Record<string, any>) {
     const response = await this.getAnswerForSchema<
       typeof schemaTools.wallet_data_answer
@@ -187,6 +198,16 @@ export class AiService {
       if (mode === 'BASIC') {
         const a = await this.getAnswerForBasicQuestion(prompt);
         answer = a;
+      }
+      if (mode === 'TOKEN_DATA') {
+        const token = await this.getTokenAddress(prompt);
+        const tokenData = await this.modulesService.getTokenOverview(token.ca);
+        console.log(tokenData);
+        const response = await this.getAnswerForTokenData(prompt, {
+          ...tokenData,
+          address: token.ca ?? '',
+        });
+        answer = response;
       }
       if (mode === 'WALLET_DATA') {
         const wallet_provider = await this.getWalletProvider(prompt);

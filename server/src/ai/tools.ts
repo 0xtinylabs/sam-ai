@@ -42,18 +42,26 @@ export const schemaTools = {
         'BASIC',
         'ASKING_FOR_SELF_WALLET',
         'ASKING_FOR_ALERTS',
+        'TOKEN_DATA',
       ],
       {
         description:
-          'Mode of AI. ASKING_FOR_ALERTS: if user asking for self alerts to list. ASKING_FOR_SELF_WALLET: If user asks for self wallet address or private key. WALLET_DATA: If user is asking about wallet balance, address, or wallet-related data. Wallet can be given with user address like jessepollak, ens name like: sencrazy.eth or zizia.base.eth or directly wallet contract address. TOKEN_ALERT: If user asks for alerts or alarms about tokens or price changes. BASIC: Any other question.',
+          'Mode of AI. ASKING_FOR_ALERTS: if user asking for self alerts to list. ASKING_FOR_SELF_WALLET: If user asks for self wallet address or private key. TOKEN_DATA: If user asking for a token data. WALLET_DATA: If user is asking about wallet balance, address, or wallet-related data. Wallet can be given with user address like jessepollak, ens name like: sencrazy.eth or zizia.base.eth or directly wallet contract address. TOKEN_ALERT: If user asks for alerts or alarms about tokens or price changes. BASIC: Any other question.',
       },
     ),
+  }),
+  token_data_answer: z.object({
+    answer: z
+      .string()
+      .describe(
+        'The answer of the prompt or the question for given data in system prompt. Give token name in answer too. Use KMB notation for numbers',
+      ),
   }),
   wallet_data_answer: z.object({
     answer: z
       .string()
       .describe(
-        'The answer of the prompt or the question for given data in system prompt.',
+        'The answer of the prompt or the question for given data in system prompt. Use KMB notation for numbers',
       ),
   }),
   token_alert: (data: Record<string, any>) =>

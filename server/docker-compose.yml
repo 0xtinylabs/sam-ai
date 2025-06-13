@@ -1,0 +1,16 @@
+services:
+  nestjs_app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./.env:/app/.env
+
+      - ./prisma/dev.db:/app/prisma/dev.db
+
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+    command: npm run start:dev

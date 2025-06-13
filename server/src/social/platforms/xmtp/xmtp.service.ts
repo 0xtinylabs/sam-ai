@@ -70,6 +70,7 @@ export class XmtpService {
   }
 
   async onMessage(conversation: Dm | Group | null, message: XmtpMessage) {
+    console.log(message);
     if (!conversation) {
       return;
     }
@@ -110,6 +111,8 @@ export class XmtpService {
     const error_id = conversation?.send(messages.error);
     return error_id;
   }
+
+  async setMessage() {}
 
   // async removeMessage(conversation: Dm | Group | null, message_id: string) {}
 
